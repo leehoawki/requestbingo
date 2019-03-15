@@ -1,0 +1,2 @@
+# requestbingo
+requestbin go version
