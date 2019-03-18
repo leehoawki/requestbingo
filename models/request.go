@@ -2,7 +2,8 @@ package models
 
 import (
 	"net/http"
-	"time"
+    "strings"
+    "time"
 )
 
 type Request struct {
@@ -39,12 +40,13 @@ func CreateRequest(_request *http.Request) *Request {
 		}
 		request.Headers = &headers
 
-		//request.QueryString =
+		request.QueryString = _request.
 		//request.FormData
 		//request.Body
 		request.ContentType = _request.Header.Get("Content-type")
+
 		request.Body = _request.GetBody
-		request.Path = _request.RequestURI
+		request.Path = strings.Split(_request.RequestURI, "?")[0]
 		//request.Raw =
 		request.ContentLength = _request.ContentLength
 
