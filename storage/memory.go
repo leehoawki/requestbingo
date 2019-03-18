@@ -19,6 +19,12 @@ func CreateBin(storage *MemoryStorage, p bool) *models.Bin {
 	return bin
 }
 
+func CreateRequest(storage *MemoryStorage, p bool) *models.Request {
+	request := models.CreateRequest()
+	storage.RequestCount += 1
+	return request
+}
+
 func CountBins(storage *MemoryStorage) int {
 	return len(storage.Bins)
 }
