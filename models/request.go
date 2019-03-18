@@ -1,8 +1,8 @@
 package models
 
 import (
-	"net/http"
-    "strings"
+	"github.com/astaxie/beego/context"
+	"strings"
     "time"
 )
 
@@ -21,34 +21,34 @@ type Request struct {
 	ContentLength int64
 }
 
-func CreateRequest(_request *http.Request) *Request {
+func CreateRequest(context *context.Context) *Request {
 	request := new(Request)
-	if _request != nil {
+	if context != nil {
 		request.Id = TinyId(6)
 		request.Time = time.Now()
-		request.RemoteAddr = _request.Header.Get("X-Forwarded-For")
+		request.RemoteAddr = context.Request.Header.Get("X-Forwarded-For")
 		if request.RemoteAddr == "" {
-			request.RemoteAddr = _request.RemoteAddr
+			request.RemoteAddr = context.Request.RemoteAddr
 		}
-		request.Method = _request.Method
+		request.Method = context.Request.Method
 
 		headers := make(map[string]string)
-		for key, val := range _request.Header {
+		for key, val := range context.Request.Header {
 			if len(val) > 0 {
 				headers[key] = val[0]
 			}
 		}
 		request.Headers = &headers
 
-		request.QueryString = _request.
+		request.QueryString = context.Request.
 		//request.FormData
 		//request.Body
-		request.ContentType = _request.Header.Get("Content-type")
+		request.ContentType = context.Request.Header.Get("Content-type")
 
-		request.Body = _request.GetBody
-		request.Path = strings.Split(_request.RequestURI, "?")[0]
+		request.Body = string(context.Input.RequestBody)
+		request.Path = strings.Split(context.Request.RequestURI, "?")[0]
 		//request.Raw =
-		request.ContentLength = _request.ContentLength
+		request.ContentLength = context.Request.ContentLength
 
 	}
 	return request
