@@ -9,10 +9,10 @@ func init() {
 	beego.Router("/", &controllers.ViewController{}, "*:Home")
 	beego.Router("/:name", &controllers.ViewController{}, "*:Bin")
 
-	beego.Router("/api/v1/bins", &controllers.ViewController{})
-	beego.Router("/api/v1/bins/:name", &controllers.ViewController{})
-	beego.Router("/api/v1/bins/:bin/requests", &controllers.ViewController{})
-	beego.Router("/api/v1/bins/:bin/requests/:name", &controllers.ViewController{})
+	beego.Router("/api/v1/bins", &controllers.ApiController{}, "post:Bins")
+	beego.Router("/api/v1/bins/:name", &controllers.ApiController{}, "get:Bin")
+	beego.Router("/api/v1/bins/:bin/requests", &controllers.ApiController{}, "get:Requests")
+	beego.Router("/api/v1/bins/:bin/requests/:name", &controllers.ApiController{}, "get:Request")
 
 	beego.Router("/api/v1/stats", &controllers.ViewController{})
 }

@@ -2,7 +2,6 @@ package storage
 
 import (
 	"requestbingo/models"
-	"time"
 )
 
 type MemoryStorage struct {
@@ -11,33 +10,24 @@ type MemoryStorage struct {
 	RequestCount int
 }
 
-const INTERVAL int = 3600
+var Mem = new(MemoryStorage)
 
-func CreateBin(storage *MemoryStorage, p bool) *models.Bin {
+func CreateBin(p bool) *models.Bin {
 	bin := models.CreateBin(p)
-	storage.Bins[bin.Name] = bin
+	Mem.Bins[bin.Name] = bin
 	return bin
 }
 
-func CreateRequest(storage *MemoryStorage, p bool) *models.Request {
-	request := models.CreateRequest()
-	storage.RequestCount += 1
+func CreateRequest(bin *models.Bin, request *models.Request) *models.Request {
+	bin.Requests = append(bin.Requests, *request)
+	Mem.RequestCount += 1
 	return request
 }
 
-func CountBins(storage *MemoryStorage) int {
-	return len(storage.Bins)
+func CountBins() int {
+	return len(Mem.Bins)
 }
 
-func LookupBin(storage *MemoryStorage, name string) *models.Bin {
-	return storage.Bins[name]
-}
-
-func expireBins(storage *MemoryStorage) {
-	expiry := time.Now().Second() - storage.BinTtl
-	for name, bin := range storage.Bins {
-		if bin.Created.Second() < expiry {
-			delete(storage.Bins, name)
-		}
-	}
+func LookupBin(name string) *models.Bin {
+	return Mem.Bins[name]
 }

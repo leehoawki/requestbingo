@@ -3,7 +3,7 @@ package models
 import (
 	"github.com/astaxie/beego/context"
 	"strings"
-    "time"
+	"time"
 )
 
 type Request struct {
@@ -13,7 +13,7 @@ type Request struct {
 	Method        string
 	Headers       *map[string]string
 	QueryString   *map[string]string
-	FormData      *[]string
+	FormData      *map[string]string
 	Body          string
 	Path          string
 	ContentType   string
@@ -40,16 +40,23 @@ func CreateRequest(context *context.Context) *Request {
 		}
 		request.Headers = &headers
 
-		request.QueryString = context.Request.
-		//request.FormData
-		//request.Body
+		params := context.Input.Params()
+		request.QueryString = &params
+
+		formdata := make(map[string]string)
+		for key, val := range context.Request.Form {
+			if len(val) > 0 {
+				formdata[key] = val[0]
+			}
+		}
+		request.FormData = &formdata
+
 		request.ContentType = context.Request.Header.Get("Content-type")
 
 		request.Body = string(context.Input.RequestBody)
 		request.Path = strings.Split(context.Request.RequestURI, "?")[0]
-		//request.Raw =
+		request.Raw = string(context.Input.RequestBody)
 		request.ContentLength = context.Request.ContentLength
-
 	}
 	return request
 }

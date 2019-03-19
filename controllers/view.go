@@ -11,14 +11,12 @@ type ViewController struct {
 	beego.Controller
 }
 
-var mem = new(storage.MemoryStorage)
-
 func (c *ViewController) Home() {
 	recents := make([]models.Bin, 0)
 	if c.GetSession("recent") != nil {
 		recent, _ := c.GetSession("recent").([]string)
 		for _, name := range recent {
-			bin := storage.LookupBin(mem, name)
+			bin := storage.LookupBin(name)
 			recents = append(recents, *bin)
 		}
 	}
@@ -28,7 +26,7 @@ func (c *ViewController) Home() {
 
 func (c *ViewController) Bin() {
 	name := c.GetString("name")
-	bin := storage.LookupBin(mem, name)
+	bin := storage.LookupBin(name)
 	if bin == nil {
 		c.Ctx.ResponseWriter.WriteHeader(404)
 		c.Ctx.ResponseWriter.Write([]byte("Not found"))
@@ -55,6 +53,8 @@ func (c *ViewController) Bin() {
 		c.SetSession("recent", recent)
 		c.TplName = "bin.tpl"
 	} else {
+		request := models.CreateRequest(c.Ctx)
+		storage.CreateRequest(bin, request)
 		c.Ctx.ResponseWriter.Header().Set("Sponsored-By", "https://www.runscope.com")
 		c.Ctx.ResponseWriter.Write([]byte("ok"))
 	}
