@@ -12,28 +12,60 @@ type ApiController struct {
 
 func (c *ApiController) Bins() {
 	private := c.Ctx.Request.Form.Get("private")
+	var bin *models.Bin
 	if private == "true" || private == "on" {
-		bin := models.CreateBin(true)
+		bin = models.CreateBin(true)
 		c.SetSession(bin.Name, bin.SecretKey)
 	} else {
-		bin := models.CreateBin(false)
+		bin = models.CreateBin(false)
 	}
-
+	storage.CreateBin(bin)
+	c.Ctx.ResponseWriter.Header().Set("Content-Type", "application/json")
+	c.Ctx.ResponseWriter.Header().Set("Access-Control-Allow-Origin", "*")
+	c.Ctx.ResponseWriter.Write([]byte(models.Bin2JsonString(bin)))
 }
 
 func (c *ApiController) Bin() {
-	name := c.GetString("name")
-	storage.LookupBin(name)
+	name := c.Ctx.Input.Param(":name")
+	bin := storage.LookupBin(name)
+	if bin == nil {
+		c.Ctx.ResponseWriter.WriteHeader(404)
+		c.Ctx.ResponseWriter.Write([]byte("Not found"))
+	} else {
+		c.Ctx.ResponseWriter.Header().Set("Content-Type", "application/json")
+		c.Ctx.ResponseWriter.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Ctx.ResponseWriter.Write([]byte(models.Bin2JsonString(bin)))
+	}
 }
 
 func (c *ApiController) Requests() {
+	bin_name := c.Ctx.Input.Param(":bin")
+	bin := storage.LookupBin(bin_name)
+	if bin == nil {
+		c.Ctx.ResponseWriter.WriteHeader(404)
+		c.Ctx.ResponseWriter.Write([]byte("Bin Not found"))
+	} else {
 
+	}
 }
 
 func (c *ApiController) Request() {
-
-}
-
-func response(code int) {
-
+	bin_name := c.Ctx.Input.Param(":bin")
+	request_id := c.Ctx.Input.Param(":request")
+	bin := storage.LookupBin(bin_name)
+	if bin == nil {
+		c.Ctx.ResponseWriter.WriteHeader(404)
+		c.Ctx.ResponseWriter.Write([]byte("Bin Not found"))
+	} else {
+		for _, request := range bin.Requests {
+			if request.Id == request_id {
+				c.Ctx.ResponseWriter.Header().Set("Content-Type", "application/json")
+				c.Ctx.ResponseWriter.Header().Set("Access-Control-Allow-Origin", "*")
+				c.Ctx.ResponseWriter.Write([]byte(models.Request2JsonString(&request)))
+				return
+			}
+		}
+		c.Ctx.ResponseWriter.WriteHeader(404)
+		c.Ctx.ResponseWriter.Write([]byte("Request Not found"))
+	}
 }

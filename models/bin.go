@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"math/rand"
 	"strconv"
 	"time"
@@ -56,11 +57,12 @@ func RandomColor() *Color {
 	return color
 }
 
-func ToMap(bin *Bin) *map[string]interface{} {
+func Bin2JsonString(bin *Bin) string {
 	m := make(map[string]interface{})
 	m["private"] = bin.Private
 	m["color"] = []int{bin.Color.R, bin.Color.G, bin.Color.B}
 	m["name"] = bin.Name
 	m["request_count"] = len(bin.Requests)
-	return &m
+	data, _ := json.Marshal(m)
+	return string(data)
 }

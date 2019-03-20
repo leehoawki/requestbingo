@@ -10,10 +10,14 @@ type MemoryStorage struct {
 	RequestCount int
 }
 
-var Mem = new(MemoryStorage)
+var Mem *MemoryStorage
 
-func CreateBin(p bool) *models.Bin {
-	bin := models.CreateBin(p)
+func init() {
+	Mem = new(MemoryStorage)
+	Mem.Bins = make(map[string]*models.Bin)
+}
+
+func CreateBin(bin *models.Bin) *models.Bin {
 	Mem.Bins[bin.Name] = bin
 	return bin
 }
