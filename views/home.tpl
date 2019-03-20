@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>RequestBin &mdash; Collect, inspect and debug HTTP requests and webhooks</title>
+    <title>RequestBingo &mdash; Collect, inspect and debug HTTP requests and webhooks</title>
     <link href="/static/img/logo.png" rel="shortcut icon"/>
     <link href="/static/css/bootstrap.css" rel="stylesheet" media="screen">
     <link href="/static/css/responsive.css" rel="stylesheet" media="screen">
@@ -49,9 +49,9 @@
 </div>
 
 <div id="content" class="row-fluid">
-    {% set width = 12 %}
-    {% if recent %} {% set width = 10 %} {% endif %}
-    <div class="span{{width}} content-wrap">
+    {{$width := 12}}
+    {{if .recent}} {{$width = 10}} {{end}}
+    <div class="span{{$width}} content-wrap">
         <div class="row-fluid">
             <div class="banner-hero">
                 <h2 class="banner-header"><span class="accent-bg-red">Inspect HTTP Requests</span></h2>
@@ -78,26 +78,25 @@
         </div>
     </div>
 
-    {% if recent %}
+    {{if .recent}}
     <div class="span2">
         <h5><i class="icon-time"></i> History</h5>
         <ul id="recent">
-            {% for bin in recent %}
+            {{range $index, $elem := .recent}}
             <li>
-                <a href="/{{bin.name}}?inspect"><i class="icon-circle" style="color: rgb{{bin.color}}"></i></a>
-                <a href="/{{bin.name}}?inspect">{{bin.name}}</a> {% if bin.private %}<i class="icon-lock"></i>{% endif
-                %}
-                ({{bin.request_count}})
-
+                <a href="/{{$elem .name}}?inspect"><i class="icon-circle" style="color: rgb{{$elem .color}}"></i></a>
+                <a href="/{{$elem .name}}?inspect">{{$elem .name}}</a>
+                {{if $elem.private}}<i class="icon-lock"></i>{{end}}
+                ({{$elem.request_count}})
             </li>
-            {% else %}
+            {{else}}}
             <p style="margin-left: -24px; color: gray;">
                 No recent bins.
             </p>
-            {% endfor %}
+            {{end}}
         </ul>
     </div>
-    {% endif %}
+    {{end}}
 </div>
 
 <div class="footer-wrap">

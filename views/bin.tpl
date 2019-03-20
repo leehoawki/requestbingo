@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>RequestBin - {{bin.name}}</title>
-    <link rel="shortcut icon" href="{{bin.favicon_uri}}"/>
+    <title>RequestBingo - {{.bin.name}}</title>
+    <link rel="shortcut icon" href="{{.bin.favicon_uri}}"/>
     <link href="/static/css/bootstrap.css" rel="stylesheet" media="screen">
     <link href="/static/css/responsive.css" rel="stylesheet" media="screen">
     <link href="/static/css/styles.css" rel="stylesheet" media="screen">
@@ -30,10 +30,10 @@
             </h1>
             <nav>
                 <ul class="nav-menu">
-                    <li><a href="/{{bin.name}}?inspect"><i class="icon-circle icon-2x"
-                                                           style="color: rgb{{bin.color}}"></i></a>
-                        <input type="text" value="{{base_url}}/{{bin.name}}" onclick="this.select()"/>
-                        {% if bin.private %}<i class="icon-lock"></i>{% endif %}
+                    <li><a href="/{{.bin.name}}?inspect"><i class="icon-circle icon-2x"
+                                                            style="color: rgb{{bin.color}}"></i></a>
+                        <input type="text" value="{{.base_url}}/{{.bin.name}}" onclick="this.select()"/>
+                        {{if .bin.private }}<i class="icon-lock"></i>{{end}}
                     </li>
                 </ul>
             </nav>
@@ -42,42 +42,42 @@
 </div>
 
 <div id="content" class="row-fluid">
-    {% set width = 12 %}
-    {% if recent %} {% set width = 10 %} {% endif %}
+    {{$width := 12}}
+    {{if .recent}} {{$width = 10}} {{end}}
     <div class="span{{width}} content-wrap">
-        {% for request in bin.requests %}
-        <div class="message-wrapper" id="message-wrapper-{{request.id}}">
+        {{range $index, $elem := .bin.requests}}
+        <div class="message-wrapper" id="message-wrapper-{{$elem.id}}">
             <div class="message-list">
                 <div class="row-fluid">
                     <div class="span4">
-                        {{base_url}}<br>
-                        <span class="method">{{request.method}}</span>
-                        <span class="absolute-path">{{request.path}}</span><span
-                                class="querystring">{{request.query_string|to_qs}}</span>
+                        {{.base_url}}<br>
+                        <span class="method">{{$elem.method}}</span>
+                        <span class="absolute-path">{{$elem.path}}</span><span
+                                class="querystring">{{$elem.query_string|to_qs}}</span>
                     </div>
                     <div class="span6 content">
-                        {% if request.content_type %}<i class="icon-code"></i>{% endif %} {{request.content_type}}<br>
-                        <i class="icon-cloud-upload"></i> {{request.content_length|friendly_size}}
+                        {{if $elem.content_type}}<i class="icon-code"></i>{{end}} {{$elem.content_type}}<br>
+                        <i class="icon-cloud-upload"></i> {{$elem.content_length|friendly_size}}
                     </div>
                     <div class="span2" class="timestamp">
-              <span title="{{request.time|exact_time}}">{{request.time|approximate_time}} ago
-                <a href="#{{request.id}}"><i class="icon-link"></i></a>
+              <span title="{{$elem.time|exact_time}}">{{$elem.time|approximate_time}} ago
+                <a href="#{{$elem.id}}"><i class="icon-link"></i></a>
               </span><br>
-                        From {{request.remote_addr}}
+                        From {{$elem.remote_addr}}
                     </div>
                 </div>
             </div>
 
-            <div id="detail-{{request.id}}" class="message-detail">
-                <div id="request-detail-{{request.id}}" class="request-detail">
+            <div id="detail-{{$elem.id}}" class="message-detail">
+                <div id="request-detail-{{$elem.id}}" class="request-detail">
                     <div class="row-fluid">
                         <div class="span4">
                             <h5>FORM/POST PARAMETERS</h5>
-                            {% for k,v in request.form_data %}
-                            <p class="keypair"><strong>{{k}}:</strong> {{v}}</p>
-                            {% else %}
-                            <em>None</em>
-                            {% endfor %}
+                            {{range $k, $v := $elem.for_data}}
+                                <p class="keypair"><strong>{{$k}}:</strong> {{$v}}</p>
+                            {{else}}
+                                <em>None</em>
+                            {{end}}
 
                             {% if request.query_string and not request.query_string is string %}
                             <h5>QUERYSTRING</h5>
@@ -101,53 +101,53 @@
                     </div>
 
                     <h5>RAW BODY</h5>
-                    <div class="request-body" data-id="{{ request.id }}">
+                    <div class="request-body" data-id="{{ %elem.id }}">
                         <pre class="body prettyprint">{%if request.raw%}{{request.raw}}{%else%}<em>None</em>{%endif%}</pre>
 
                     </div>
                 </div>
             </div>
         </div>
-        {% else %}
+        {{else}}
 
         <h4 class="text-center">Bin URL</h4>
         <h2 class="text-center">
-            <input class="xxlarge input-xxlarge" type="text" value="{{base_url}}/{{bin.name}}" onclick="this.select()"
+            <input class="xxlarge input-xxlarge" type="text" value="{{.base_url}}/{{.bin.name}}" onclick="this.select()"
                    style="border-color: rgb{{bin.color}}; border-width: 3px;"/></h2>
-        <p class="text-center">{% if bin.private %}This is a private bin. Requests are only viewable from this
-            computer.{% endif %}
+        <p class="text-center">{{if .bin.private}}This is a private bin. Requests are only viewable from this
+            computer.{{end}}
 
-        <hr>
-        <div class="row-fluid">
-            <div class="span6 offset3">
+    <hr>
+    <div class="row-fluid">
+        <div class="span6 offset3">
 
-                <h4>Make a request to get started.</h4>
+            <h4>Make a request to get started.</h4>
 
-                <h5>cURL</h5>
-                <pre>curl -X POST -d "fizz=buzz" {{base_url}}/{{bin.name}}</pre>
+            <h5>cURL</h5>
+            <pre>curl -X POST -d "fizz=buzz" {{.base_url}}/{{.bin.name}}</pre>
 
-                <h5>Python (with Requests)</h5>
-                <pre class="prettyprint">import requests, time
-r = requests.post('{{base_url}}/{{bin.name}}', data={"ts":time.time()})
+            <h5>Python (with Requests)</h5>
+            <pre class="prettyprint">import requests, time
+r = requests.post('{{.base_url}}/{{.bin.name}}', data={"ts":time.time()})
 print r.status_code
 print r.content</pre>
 
-                <h5>Node.js (with request)</h5>
-                <pre class="prettyprint">var request = require('request');
-var url ='{{base_url}}/{{bin.name}}'
+            <h5>Node.js (with request)</h5>
+            <pre class="prettyprint">var request = require('request');
+var url ='{{.base_url}}/{{.bin.name}}'
 request(url, function (error, response, body) {
   if (!error) {
     console.log(body);
   }
 });</pre>
 
-                <h5>Ruby</h5>
-                <pre class="prettyprint">require 'open-uri'
-result = open('{{base_url}}/{{bin.name}}')
+            <h5>Ruby</h5>
+            <pre class="prettyprint">require 'open-uri'
+result = open('{{.base_url}}/{{.bin.name}}')
 result.lines { |f| f.each_line {|line| p line} }</pre>
 
-                <h5>C# / .NET</h5>
-                <pre class="prettyprint">using System;
+            <h5>C# / .NET</h5>
+            <pre class="prettyprint">using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -163,15 +163,15 @@ namespace RequestBinExample
     private static async Task MakeRequest()
     {
       var httpClient = new HttpClient();
-      var response = await httpClient.GetAsync(new Uri("{{base_url}}/{{bin.name}}"));
+      var response = await httpClient.GetAsync(new Uri("{{.base_url}}/{{.bin.name}}"));
       var body = await response.Content.ReadAsStringAsync();
       Console.WriteLine(body);
     }
   }
 }</pre>
 
-                <h5>Java</h5>
-                <pre class="prettyprint">import org.apache.commons.httpclient.*;
+            <h5>Java</h5>
+            <pre class="prettyprint">import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.methods.*;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
@@ -180,7 +180,7 @@ import java.io.*;
 public class RequestBinTutorial {
   public static void main(String[] args) {
     HttpClient client = new HttpClient();
-    GetMethod method = new GetMethod("{{base_url}}/{{bin.name}}");
+    GetMethod method = new GetMethod("{{.base_url}}/{{.bin.name}}");
     try {
       int statusCode = client.executeMethod(method);
       byte[] responseBody = method.getResponseBody();
@@ -194,22 +194,22 @@ public class RequestBinTutorial {
   }
 }</pre>
 
-                <h5>PHP</h5>
-                <pre class="prettyprint">&lt;?php
-    $result = file_get_contents('{{base_url}}/{{bin.name}}');
+            <h5>PHP</h5>
+            <pre class="prettyprint">&lt;?php
+    $result = file_get_contents('{{.base_url}}/{{.bin.name}}');
     echo $result;
 ?&gt;</pre>
 
-            </div>
         </div>
+    </div>
 
-        {% endfor %}
+        {{end}}}
 
         <hr>
 
         <div class="alert-message block-message info">
             <h4>Limits</h4>
-            <p>This {% if bin.private %}<strong>private</strong>{% endif %}
+            <p>This {{if .bin.private }}<strong>private</strong>{{end}}
                 bin will keep the last 20 requests made to it and remain available for 48 hours after it was created.
                 However, data might be cleared at any time, so <strong>treat bins as highly ephemeral</strong>.</p>
 
