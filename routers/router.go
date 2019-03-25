@@ -14,5 +14,5 @@ func init() {
 	beego.Router("/api/v1/bins/:bin/requests", &controllers.ApiController{}, "get:Requests")
 	beego.Router("/api/v1/bins/:bin/requests/:request", &controllers.ApiController{}, "get:Request")
 
-	//beego.Router("/api/v1/stats", &controllers.ViewController{})
+	beego.Router("/api/v1/stats", &controllers.StatController{}, "get:Stats")
 }

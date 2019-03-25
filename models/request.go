@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/astaxie/beego/context"
 	"strings"
 	"time"
@@ -88,5 +89,29 @@ func Request2JsonString(request *Request) string {
 	m["content_length"] = request.ContentLength
 	m["content_type"] = request.ContentType
 	data, _ := json.Marshal(m)
+	return string(data)
+}
+
+func Requests2JsonString(request *[]Request) string {
+	a := make([]map[string]interface{}, len(*request))
+
+	for index, request := range *request {
+		m := make(map[string]interface{})
+		m["id"] = request.Id
+		m["time"] = request.Time
+		m["remote_addr"] = request.RemoteAddr
+		m["method"] = request.Method
+		m["headers"] = request.Headers
+		m["query_string"] = request.QueryString
+		m["raw"] = request.Raw
+		m["form_data"] = request.FormData
+		m["body"] = request.Body
+		m["path"] = request.Path
+		m["content_length"] = request.ContentLength
+		m["content_type"] = request.ContentType
+		a[index] = m
+	}
+	fmt.Println(len(*request))
+	data, _ := json.Marshal(a)
 	return string(data)
 }

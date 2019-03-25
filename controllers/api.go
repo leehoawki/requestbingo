@@ -45,7 +45,9 @@ func (c *ApiController) Requests() {
 		c.Ctx.ResponseWriter.WriteHeader(404)
 		c.Ctx.ResponseWriter.Write([]byte("Bin Not found"))
 	} else {
-
+		c.Ctx.ResponseWriter.Header().Set("Content-Type", "application/json")
+		c.Ctx.ResponseWriter.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Ctx.ResponseWriter.Write([]byte(models.Requests2JsonString(&bin.Requests)))
 	}
 }
 
