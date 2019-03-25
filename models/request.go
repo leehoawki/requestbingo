@@ -48,7 +48,7 @@ func CreateRequest(context *context.Context) *Request {
 		if len(segments) > 1 {
 			request.QueryString = segments[1]
 			params := strings.Split(context.Request.RequestURI, "?")[1]
-			for _, elem := range strings.Split(params, "$") {
+			for _, elem := range strings.Split(params, "&") {
 				kv := strings.Split(elem, "=")
 				k := kv[0]
 				v := kv[1]
