@@ -26,7 +26,7 @@
         <div class="span12">
             <h1 class="logo">
                 <a href="/"><img src="/static/img/logo-2x.png" height="38" width="44"/></a>
-                <a href="/"><span class="logo-accent">Request</span>Bin</a>
+                <a href="/"><span class="logo-accent">Request</span>Bingo</a>
             </h1>
             <nav>
                 <ul class="nav-menu">
@@ -79,9 +79,9 @@
                                 <em>None</em>
                             {{end}}
 
-                            {{if $elem.QueryString}}
+                            {{if $elem.Querys}}
                                 <h5>QUERYSTRING</h5>
-                            {{range $k, $v := $elem.QueryString}}
+                            {{range $k, $v := $elem.Querys}}
                             {{if not $v}}
                             <p class="keypair"><strong>{{$k}}</strong></p>
                             {{else}}
@@ -202,7 +202,7 @@ public class RequestBinTutorial {
         </div>
     </div>
 
-        {{end}}}
+        {{end}}
 
         <hr>
 

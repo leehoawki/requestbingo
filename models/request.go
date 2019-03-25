@@ -13,7 +13,8 @@ type Request struct {
 	RemoteAddr    string
 	Method        string
 	Headers       *map[string]string
-	QueryString   *map[string]string
+	QueryString   string
+	Querys        *map[string]string
 	FormData      *map[string]string
 	Body          string
 	Path          string
@@ -41,9 +42,20 @@ func CreateRequest(context *context.Context) *Request {
 		}
 		request.Headers = &headers
 
-		params := context.Input.Params()
-		request.QueryString = &params
-
+		segments := strings.Split(context.Request.RequestURI, "?")
+		request.Path = segments[0]
+		querys := make(map[string]string)
+		if len(segments) > 1 {
+			request.QueryString = segments[1]
+			params := strings.Split(context.Request.RequestURI, "?")[1]
+			for _, elem := range strings.Split(params, "$") {
+				kv := strings.Split(elem, "=")
+				k := kv[0]
+				v := kv[1]
+				querys[k] = v
+			}
+		}
+		request.Querys = &querys
 		formdata := make(map[string]string)
 		for key, val := range context.Request.Form {
 			if len(val) > 0 {
@@ -55,7 +67,6 @@ func CreateRequest(context *context.Context) *Request {
 		request.ContentType = context.Request.Header.Get("Content-type")
 
 		request.Body = string(context.Input.RequestBody)
-		request.Path = strings.Split(context.Request.RequestURI, "?")[0]
 		request.Raw = string(context.Input.RequestBody)
 		request.ContentLength = context.Request.ContentLength
 	}
