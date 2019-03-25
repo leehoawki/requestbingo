@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>RequestBingo - {{.bin.name}}</title>
-    <link rel="shortcut icon" href="{{.bin.favicon_uri}}"/>
+    <title>RequestBingo - {{.bin.Name}}</title>
+    <link rel="shortcut icon" href="{{.bin.FaviconUrl}}"/>
     <link href="/static/css/bootstrap.css" rel="stylesheet" media="screen">
     <link href="/static/css/responsive.css" rel="stylesheet" media="screen">
     <link href="/static/css/styles.css" rel="stylesheet" media="screen">
@@ -30,10 +30,10 @@
             </h1>
             <nav>
                 <ul class="nav-menu">
-                    <li><a href="/{{.bin.name}}?inspect"><i class="icon-circle icon-2x"
-                                                            style="color: rgb{{bin.color}}"></i></a>
-                        <input type="text" value="{{.base_url}}/{{.bin.name}}" onclick="this.select()"/>
-                        {{if .bin.private }}<i class="icon-lock"></i>{{end}}
+                    <li><a href="/{{.bin.Name}}?inspect"><i class="icon-circle icon-2x"
+                                                            style="color: rgb{{.color}}"></i></a>
+                        <input type="text" value="{{.base_url}}/{{.bin.Name}}" onclick="this.select()"/>
+                        {{if .bin.Private }}<i class="icon-lock"></i>{{end}}
                     </li>
                 </ul>
             </nav>
@@ -44,66 +44,65 @@
 <div id="content" class="row-fluid">
     {{$width := 12}}
     {{if .recent}} {{$width = 10}} {{end}}
-    <div class="span{{width}} content-wrap">
-        {{range $index, $elem := .bin.requests}}
-        <div class="message-wrapper" id="message-wrapper-{{$elem.id}}">
+    <div class="span{{$width}} content-wrap">
+        {{range $index, $elem := .bin.Requests}}
+        <div class="message-wrapper" id="message-wrapper-{{$elem.Id}}">
             <div class="message-list">
                 <div class="row-fluid">
                     <div class="span4">
-                        {{.base_url}}<br>
-                        <span class="method">{{$elem.method}}</span>
-                        <span class="absolute-path">{{$elem.path}}</span><span
-                                class="querystring">{{$elem.query_string|to_qs}}</span>
+                        {{$.base_url}}<br>
+                        <span class="method">{{$elem.Method}}</span>
+                        <span class="absolute-path">{{$elem.Path}}</span><span
+                                class="querystring">{{$elem.QueryString}}</span>
                     </div>
                     <div class="span6 content">
-                        {{if $elem.content_type}}<i class="icon-code"></i>{{end}} {{$elem.content_type}}<br>
-                        <i class="icon-cloud-upload"></i> {{$elem.content_length|friendly_size}}
+                        {{if $elem.ContentType}}<i class="icon-code"></i>{{end}} {{$elem.ContentType}}<br>
+                        <i class="icon-cloud-upload"></i> {{$elem.ContentLength}}
                     </div>
                     <div class="span2" class="timestamp">
-              <span title="{{$elem.time|exact_time}}">{{$elem.time|approximate_time}} ago
-                <a href="#{{$elem.id}}"><i class="icon-link"></i></a>
+              <span title="{{$elem.Time}}">{{$elem.Time}} ago
+                <a href="#{{$elem.Id}}"><i class="icon-link"></i></a>
               </span><br>
-                        From {{$elem.remote_addr}}
+                        From {{$elem.RemoteAddr}}
                     </div>
                 </div>
             </div>
 
-            <div id="detail-{{$elem.id}}" class="message-detail">
-                <div id="request-detail-{{$elem.id}}" class="request-detail">
+            <div id="detail-{{$elem.Id}}" class="message-detail">
+                <div id="request-detail-{{$elem.Id}}" class="request-detail">
                     <div class="row-fluid">
                         <div class="span4">
                             <h5>FORM/POST PARAMETERS</h5>
-                            {{range $k, $v := $elem.for_data}}
+                            {{range $k, $v := $elem.FormData}}
                                 <p class="keypair"><strong>{{$k}}:</strong> {{$v}}</p>
                             {{else}}
                                 <em>None</em>
                             {{end}}
 
-                            {% if request.query_string and not request.query_string is string %}
-                            <h5>QUERYSTRING</h5>
-                            {% for k,v in request.query_string|dictsort: %}
-                            {% if not v %}
-                            <p class="keypair"><strong>{{k}}</strong></p>
-                            {% else %}
-                            <p class="keypair"><strong>{{k}}:</strong> {{v}}</p>
-                            {% endif %}
-                            {% endfor %}
-                            {% endif %}
+                            {{if $elem.QueryString}}
+                                <h5>QUERYSTRING</h5>
+                            {{range $k, $v := $elem.QueryString}}
+                            {{if not $v}}
+                            <p class="keypair"><strong>{{$k}}</strong></p>
+                            {{else}}
+                            <p class="keypair"><strong>{{$k}}:</strong> {{$v}}</p>
+                            {{end}}
+                            {{end}}
+                            {{end}}
                         </div>
                         <div class="span8">
-                            {% if request.headers %}
+                            {{if $elem.Headers}}
                             <h5>HEADERS</h5>
-                            {% for header in request.headers.items() %}
-                            <p class="keypair"><strong>{{header.0}}:</strong> {{header.1|escape}}</p>
-                            {% endfor %}
-                            {% endif %}
+                            {{range $k, $v := $elem.Headers}}
+                            <p class="keypair"><strong>{{$k}}:</strong> {{$v}}</p>
+                            {{end}}
+                            {{end}}
                         </div>
                     </div>
 
                     <h5>RAW BODY</h5>
-                    <div class="request-body" data-id="{{ %elem.id }}">
-                        <pre class="body prettyprint">{%if request.raw%}{{request.raw}}{%else%}<em>None</em>{%endif%}</pre>
-
+                    <div class="request-body" data-id="{{$elem.Id}}">
+                        <pre class="body prettyprint">{{if $elem.Raw}}{{$elem.Raw}}{{else}}<em>None</em>{{end}}</pre>
                     </div>
                 </div>
             </div>
@@ -112,9 +111,9 @@
 
         <h4 class="text-center">Bin URL</h4>
         <h2 class="text-center">
-            <input class="xxlarge input-xxlarge" type="text" value="{{.base_url}}/{{.bin.name}}" onclick="this.select()"
-                   style="border-color: rgb{{bin.color}}; border-width: 3px;"/></h2>
-        <p class="text-center">{{if .bin.private}}This is a private bin. Requests are only viewable from this
+            <input class="xxlarge input-xxlarge" type="text" value="{{.base_url}}/{{.bin.Name}}" onclick="this.select()"
+                   style="border-color: rgb{{.color}}; border-width: 3px;"/></h2>
+        <p class="text-center">{{if .bin.Private}}This is a private bin. Requests are only viewable from this
             computer.{{end}}
 
     <hr>
@@ -124,17 +123,17 @@
             <h4>Make a request to get started.</h4>
 
             <h5>cURL</h5>
-            <pre>curl -X POST -d "fizz=buzz" {{.base_url}}/{{.bin.name}}</pre>
+            <pre>curl -X POST -d "fizz=buzz" {{.base_url}}/{{.bin.Name}}</pre>
 
             <h5>Python (with Requests)</h5>
             <pre class="prettyprint">import requests, time
-r = requests.post('{{.base_url}}/{{.bin.name}}', data={"ts":time.time()})
+r = requests.post('{{.base_url}}/{{.bin.Name}}', data={"ts":time.time()})
 print r.status_code
 print r.content</pre>
 
             <h5>Node.js (with request)</h5>
             <pre class="prettyprint">var request = require('request');
-var url ='{{.base_url}}/{{.bin.name}}'
+var url ='{{.base_url}}/{{.bin.Name}}'
 request(url, function (error, response, body) {
   if (!error) {
     console.log(body);
@@ -143,7 +142,7 @@ request(url, function (error, response, body) {
 
             <h5>Ruby</h5>
             <pre class="prettyprint">require 'open-uri'
-result = open('{{.base_url}}/{{.bin.name}}')
+result = open('{{.base_url}}/{{.bin.Name}}')
 result.lines { |f| f.each_line {|line| p line} }</pre>
 
             <h5>C# / .NET</h5>
@@ -163,7 +162,7 @@ namespace RequestBinExample
     private static async Task MakeRequest()
     {
       var httpClient = new HttpClient();
-      var response = await httpClient.GetAsync(new Uri("{{.base_url}}/{{.bin.name}}"));
+      var response = await httpClient.GetAsync(new Uri("{{.base_url}}/{{.bin.Name}}"));
       var body = await response.Content.ReadAsStringAsync();
       Console.WriteLine(body);
     }
@@ -180,7 +179,7 @@ import java.io.*;
 public class RequestBinTutorial {
   public static void main(String[] args) {
     HttpClient client = new HttpClient();
-    GetMethod method = new GetMethod("{{.base_url}}/{{.bin.name}}");
+    GetMethod method = new GetMethod("{{.base_url}}/{{.bin.Name}}");
     try {
       int statusCode = client.executeMethod(method);
       byte[] responseBody = method.getResponseBody();
@@ -196,7 +195,7 @@ public class RequestBinTutorial {
 
             <h5>PHP</h5>
             <pre class="prettyprint">&lt;?php
-    $result = file_get_contents('{{.base_url}}/{{.bin.name}}');
+    $result = file_get_contents('{{.base_url}}/{{.bin.Name}}');
     echo $result;
 ?&gt;</pre>
 
@@ -209,7 +208,7 @@ public class RequestBinTutorial {
 
         <div class="alert-message block-message info">
             <h4>Limits</h4>
-            <p>This {{if .bin.private }}<strong>private</strong>{{end}}
+            <p>This {{if .bin.Private }}<strong>private</strong>{{end}}
                 bin will keep the last 20 requests made to it and remain available for 48 hours after it was created.
                 However, data might be cleared at any time, so <strong>treat bins as highly ephemeral</strong>.</p>
 

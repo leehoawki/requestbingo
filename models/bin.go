@@ -66,3 +66,7 @@ func Bin2JsonString(bin *Bin) string {
 	data, _ := json.Marshal(m)
 	return string(data)
 }
+
+func GetColor(bin *Bin) string {
+	return "(" + string(bin.Color.R) + "," + string(bin.Color.R) + "," + string(bin.Color.R) + ")"
+}

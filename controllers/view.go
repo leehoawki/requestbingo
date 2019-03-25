@@ -25,7 +25,7 @@ func (c *ViewController) Home() {
 }
 
 func (c *ViewController) Bin() {
-	name := c.GetString("name")
+	name := c.Ctx.Input.Param(":name")
 	bin := storage.LookupBin(name)
 	if bin == nil {
 		c.Ctx.ResponseWriter.WriteHeader(404)
@@ -52,6 +52,7 @@ func (c *ViewController) Bin() {
 		}
 		c.SetSession("recent", recent)
 		c.Data["bin"] = bin
+		c.Data["color"] = models.GetColor(bin)
 		c.Data["base_url"] = c.Ctx.Input.Scheme() + "://" + c.Ctx.Request.Host
 		c.TplName = "bin.tpl"
 	} else {
