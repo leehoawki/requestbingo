@@ -30,8 +30,7 @@
             </h1>
             <nav>
                 <ul class="nav-menu">
-                    <li><a href="/{{.bin.Name}}?inspect"><i class="icon-circle icon-2x"
-                                                            style="color: rgb{{.color}}"></i></a>
+                    <li><a href="/{{.bin.Name}}?inspect"><i class="icon-circle icon-2x" style="color: rgb{{.bin.ColorString}}"></i></a>
                         <input type="text" value="{{.base_url}}/{{.bin.Name}}" onclick="this.select()"/>
                         {{if .bin.Private }}<i class="icon-lock"></i>{{end}}
                     </li>
@@ -112,7 +111,7 @@
         <h4 class="text-center">Bin URL</h4>
         <h2 class="text-center">
             <input class="xxlarge input-xxlarge" type="text" value="{{.base_url}}/{{.bin.Name}}" onclick="this.select()"
-                   style="border-color: rgb{{.color}}; border-width: 3px;"/></h2>
+                   style="border-color: rgb{{.bin.ColorString}}; border-width: 3px;"/></h2>
         <p class="text-center">{{if .bin.Private}}This is a private bin. Requests are only viewable from this
             computer.{{end}}
 

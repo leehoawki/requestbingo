@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
 	"math/rand"
 	"strconv"
 	"time"
@@ -14,13 +15,14 @@ type Color struct {
 }
 
 type Bin struct {
-	Created    time.Time
-	Private    bool
-	Color      *Color
-	Name       string
-	FaviconUrl string
-	Requests   []Request
-	SecretKey  string
+	Created     time.Time
+	Private     bool
+	Color       *Color
+	ColorString string
+	Name        string
+	FaviconUrl  string
+	Requests    []Request
+	SecretKey   string
 }
 
 func CreateBin(p bool) *Bin {
@@ -28,6 +30,7 @@ func CreateBin(p bool) *Bin {
 	bin.Created = time.Now()
 	bin.Private = p
 	bin.Color = RandomColor()
+	bin.ColorString = GetColor(bin.Color)
 	bin.Name = TinyId(8)
 	bin.FaviconUrl = Solid16x16gifDatauri(bin.Color)
 	bin.Requests = make([]Request, 0)
@@ -67,6 +70,6 @@ func Bin2JsonString(bin *Bin) string {
 	return string(data)
 }
 
-func GetColor(bin *Bin) string {
-	return "(" + string(bin.Color.R) + "," + string(bin.Color.R) + "," + string(bin.Color.R) + ")"
+func GetColor(color *Color) string {
+	return fmt.Sprintf("(%d,%d,%d)", color.R, color.G, color.B)
 }

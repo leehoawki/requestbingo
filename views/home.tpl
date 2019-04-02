@@ -84,10 +84,10 @@
         <ul id="recent">
             {{range $index, $elem := .recent}}
             <li>
-                <a href="/{{$elem .name}}?inspect"><i class="icon-circle" style="color: rgb{{$elem .color}}"></i></a>
-                <a href="/{{$elem .name}}?inspect">{{$elem .name}}</a>
-                {{if $elem.private}}<i class="icon-lock"></i>{{end}}
-                ({{$elem.request_count}})
+                <a href="/{{$elem.Name}}?inspect"><i class="icon-circle" style="color: rgb{{$elem.ColorString}}"></i></a>
+                <a href="/{{$elem.Name}}?inspect">{{$elem.Name}}</a>
+                {{if $elem.Private}}<i class="icon-lock"></i>{{end}}
+                ({{$elem.Requests | len}})
             </li>
             {{else}}}
             <p style="margin-left: -24px; color: gray;">
