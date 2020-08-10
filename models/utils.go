@@ -18,6 +18,6 @@ func Solid16x16gifDatauri(color *Color) string {
 }
 
 func TinyId(len int) string {
-	u1 := uuid.Must(uuid.NewV4())
+	u1 := uuid.Must(uuid.NewV4(), nil)
 	return u1.String()[0:len]
 }

@@ -2,7 +2,7 @@ package routers
 
 import (
 	"github.com/astaxie/beego"
-	"requestbingo/controllers"
+	"github.com/leehoawki/requestbingo/controllers"
 )
 
 func init() {

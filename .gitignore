@@ -5,6 +5,8 @@
 *.log.*
 *.tmp
 *.rdb
+vendor
+go.sum
 
 .DS_Store
 .htaccess

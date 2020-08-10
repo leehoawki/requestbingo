@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
-	"requestbingo/models"
-	"requestbingo/storage"
+	"github.com/leehoawki/requestbingo/models"
+	"github.com/leehoawki/requestbingo/storage"
 )
 
 type ApiController struct {

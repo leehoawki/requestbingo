@@ -3,7 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"github.com/astaxie/beego"
-	"requestbingo/storage"
+	"github.com/leehoawki/requestbingo/storage"
 )
 
 type StatController struct {

@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"requestbingo/models"
+	"github.com/leehoawki/requestbingo/models"
 )
 
 type MemoryStorage struct {

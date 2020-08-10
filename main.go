@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/astaxie/beego"
-	_ "requestbingo/models"
-	_ "requestbingo/routers"
+	_ "github.com/leehoawki/requestbingo/models"
+	_ "github.com/leehoawki/requestbingo/routers"
 )
 
 func main() {
